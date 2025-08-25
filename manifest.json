@@ -1,12 +1,14 @@
+
+
 {
-  "name": "ScheduleOS - Code Your Classes",
-  "short_name": "ScheduleOS",
+  "name": "Jadwal MatKul",
+  "short_name": "Jadwal",
   "id": "/",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
-  "background_color": "#0d1117",
-  "theme_color": "#58a6ff",
+  "background_color": "#0073e6",
+  "theme_color": "#0073e6",
   "icons": [  
     {
       "src": "icons/icon-192.png",
