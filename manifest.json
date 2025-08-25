@@ -1,21 +1,22 @@
+
+
 {
-  "name": "Jadwal Matkul",
+  "name": "Jadwal MatKul",
   "short_name": "Jadwal",
-  "description": "Aplikasi Jadwal Mata Kuliah PWA",
+  "id": "/",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
   "background_color": "#0073e6",
   "theme_color": "#0073e6",
-  "orientation": "portrait",
-  "icons": [
+  "icons": [  
     {
-      "src": "icons/icon-192x192.png",
+      "src": "icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-512x512.png",
+      "src": "icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
