@@ -2,7 +2,7 @@
   "name": "Jadwal Matkul",
   "short_name": "Jadwal",
   "description": "Aplikasi Jadwal Mata Kuliah PWA",
-  "start_url": "./",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0073e6",
   "theme_color": "#0073e6",
