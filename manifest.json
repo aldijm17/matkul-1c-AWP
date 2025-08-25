@@ -1,14 +1,12 @@
-
-
 {
-  "name": "Jadwal MatKul",
-  "short_name": "Jadwal",
+  "name": "ScheduleOS - Code Your Classes",
+  "short_name": "ScheduleOS",
   "id": "/",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
-  "background_color": "#0073e6",
-  "theme_color": "#0073e6",
+  "background_color": "#0d1117",
+  "theme_color": "#58a6ff",
   "icons": [  
     {
       "src": "icons/icon-192.png",
@@ -20,5 +18,9 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "description": "A developer-themed class schedule manager with code-inspired interface",
+  "categories": ["productivity", "education"],
+  "lang": "id",
+  "orientation": "portrait-primary"
 }
