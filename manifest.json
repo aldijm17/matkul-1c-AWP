@@ -18,8 +18,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "description": "A developer-themed class schedule manager with code-inspired interface",
-  "categories": ["productivity", "education"],
-  "lang": "id"
+  ]
 }
