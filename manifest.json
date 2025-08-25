@@ -21,6 +21,5 @@
   ],
   "description": "A developer-themed class schedule manager with code-inspired interface",
   "categories": ["productivity", "education"],
-  "lang": "id",
-  "orientation": "portrait-primary"
+  "lang": "id"
 }
