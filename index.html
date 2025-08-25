@@ -1,269 +1,713 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal Matkul - PWA </title>
+    <title>ScheduleOS - Code Your Classes</title>
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    <!-- <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkphZHdhbCBNYXRrdWwiLAogICJzaG9ydF9uYW1lIjogIkphZHdhbCIsCiAgImRlc2NyaXB0aW9uIjogIkFwbGlrYXNpIEphZHdhbCBNYXRhIEt1bGlhaCBQV0EiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzAwNzNlNiIsCiAgInRoZW1lX2NvbG9yIjogIiMwMDczZTYiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTV6TXk1dmNtY3ZNakF3TUM5emRtY2lJSFpwWlhkQ2IzZzlJakFnTUNBME9EQWdORGd3SWo0OGNtVmpkQ0JtYVd4c1BTSWpNREEzTTJVMklpQjNhV1IwYUQwaU5EZ3dJaUJvWldsbmFIUTlJalE0TUNJdlBqeDBaWGgwSUhBOUlqSXpOQ0F5TkRBaUlIUmxlSFE2WVc1amFHOXlQU0p0YVdSa2JHVWlJR1pwYkd3OUluZG9hWFJsSWlCbWRXeHVkUzFoZDNWa2FYUnBibWM5SWk0dU1USWlJSE5wZW1VOUlqSXpJajQ4SWlCNGJXeDNjem9qSWo0OEwzUmxlSFErUEM5emRtYysKIiwKICAgICAgInNpemVzIjogIjQ4eCA0ODAiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ=="> -->
     
     <!-- Meta tags untuk PWA -->
-    <meta name="theme-color" content="#0073e6">
+    <meta name="theme-color" content="#0d1117">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Jadwal Matkul">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ScheduleOS">
     
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-color: #0073e6;
-            --secondary-color: #f8f9fa;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
+            /* GitHub Dark Theme Colors */
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-canvas: #010409;
+            --border-default: #30363d;
+            --border-muted: #21262d;
+            
+            /* Accent Colors */
+            --accent-primary: #58a6ff;
+            --accent-secondary: #f85149;
+            --accent-success: #3fb950;
+            --accent-warning: #d29922;
+            --accent-purple: #a5a5ff;
+            --accent-pink: #ff6bcf;
+            
+            /* Text Colors */
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --text-inverse: #0d1117;
+            
+            /* Syntax Highlighting */
+            --syntax-keyword: #ff7b72;
+            --syntax-string: #a5c9ea;
+            --syntax-function: #d2a8ff;
+            --syntax-variable: #ffa657;
+            --syntax-comment: #8b949e;
+            
+            /* Shadows */
+            --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-canvas);
+            color: var(--text-primary);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Terminal-like animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, var(--accent-primary) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, var(--accent-purple) 0%, transparent 50%);
+            opacity: 0.05;
+            animation: codeFlow 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        @keyframes codeFlow {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.05; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.08; }
+            100% { transform: translateY(0) rotate(360deg); opacity: 0.05; }
         }
         
         .main-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-            padding: 30px;
-            min-height: calc(100vh - 40px);
-        }
-        
-        .time-display {
-            background: linear-gradient(45deg, var(--primary-color), #0056b3);
-            color: white;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            border-radius: 12px;
+            margin: 8px;
             padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 20px rgba(0, 115, 230, 0.3);
+            min-height: calc(100vh - 16px);
+            position: relative;
+            box-shadow: var(--shadow-lg);
         }
         
-        .schedule-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            border-left: 5px solid var(--primary-color);
+        .main-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            opacity: 0.5;
         }
         
-        .schedule-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        /* Terminal Header */
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 8px 8px 0 0;
+            padding: 12px 16px;
+            margin: -20px -20px 20px -20px;
+            position: relative;
         }
         
-        .schedule-card.active {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
-            border-left-color: #fff;
-            animation: pulse 2s infinite;
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
         }
         
-        .schedule-card.upcoming {
-            background: linear-gradient(45deg, #ffc107, #fd7e14);
-            color: white;
-            border-left-color: #fff;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-        
-        .notification-status {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-        
-        .fab {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
+        .dot {
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            background: linear-gradient(45deg, var(--primary-color), #0056b3);
-            border: none;
-            color: white;
-            font-size: 24px;
-            box-shadow: 0 8px 20px rgba(0, 115, 230, 0.4);
-            transition: all 0.3s ease;
+        }
+        
+        .dot.red { background: var(--accent-secondary); }
+        .dot.yellow { background: var(--accent-warning); }
+        .dot.green { background: var(--accent-success); }
+        
+        .terminal-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .terminal-path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        /* Status Bar */
+        .status-bar {
+            position: fixed;
+            top: 12px;
+            right: 12px;
             z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
         
-        .fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 30px rgba(0, 115, 230, 0.6);
+        .status-indicator {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
         }
         
-        .stats-row {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+        .status-indicator:hover {
+            background: var(--bg-tertiary);
+            transform: translateY(-1px);
+        }
+        
+        .status-indicator.active { color: var(--accent-success); }
+        .status-indicator.error { color: var(--accent-secondary); }
+        .status-indicator.warning { color: var(--accent-warning); }
+        .status-indicator.info { color: var(--accent-primary); }
+        
+        /* Code Block Styles */
+        .code-block {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .code-block::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: -1px;
+            right: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-default);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            padding: 2px 8px;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        
+        /* Time Display - JSON Style */
+        .time-display {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .json-key {
+            color: var(--syntax-keyword);
+        }
+        
+        .json-string {
+            color: var(--syntax-string);
+        }
+        
+        .json-value {
+            color: var(--accent-primary);
+        }
+        
+        .json-bracket {
+            color: var(--text-secondary);
+        }
+        
+        /* Stats - Array Style */
+        .stats-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
         }
         
         .stat-item {
             text-align: center;
-            padding: 15px;
+            padding: 8px;
         }
         
         .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-color);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 4px;
         }
         
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        
+        /* Day Filter - Tab Style */
         .day-filter {
             display: flex;
-            gap: 10px;
+            gap: 4px;
             overflow-x: auto;
-            padding: 10px 0;
-            margin-bottom: 20px;
+            padding: 4px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .day-filter::-webkit-scrollbar {
+            display: none;
         }
         
         .day-btn {
-            background: rgba(255, 255, 255, 0.8);
-            border: 2px solid transparent;
-            padding: 8px 16px;
-            border-radius: 20px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 500;
             white-space: nowrap;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             cursor: pointer;
+            position: relative;
+        }
+        
+        .day-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-color: var(--border-default);
         }
         
         .day-btn.active {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+            background: var(--accent-primary);
+            color: var(--text-inverse);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-sm);
         }
         
-        .firebase-status {
+        /* Schedule Cards - Class Definitions */
+        .schedule-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .schedule-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--border-default);
+            border-radius: 3px 0 0 3px;
+        }
+        
+        .schedule-card:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .schedule-card:hover::before {
+            background: var(--accent-primary);
+        }
+        
+        .schedule-card.active {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-success);
+            box-shadow: 0 0 20px rgba(63, 185, 80, 0.2);
+        }
+        
+        .schedule-card.active::before {
+            background: var(--accent-success);
+            box-shadow: 0 0 10px var(--accent-success);
+        }
+        
+        .schedule-card.upcoming {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-warning);
+            box-shadow: 0 0 20px rgba(210, 153, 34, 0.2);
+        }
+        
+        .schedule-card.upcoming::before {
+            background: var(--accent-warning);
+            box-shadow: 0 0 10px var(--accent-warning);
+        }
+        
+        .class-signature {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        
+        .class-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--syntax-function);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        
+        .class-property {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+        }
+        
+        .class-property .property-key {
+            color: var(--syntax-keyword);
+            min-width: 80px;
+        }
+        
+        .class-property .property-value {
+            color: var(--syntax-string);
+        }
+        
+        .status-badge-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-default);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-badge-card.active {
+            background: var(--accent-success);
+            color: var(--text-inverse);
+            border-color: var(--accent-success);
+        }
+        
+        .status-badge-card.upcoming {
+            background: var(--accent-warning);
+            color: var(--text-inverse);
+            border-color: var(--accent-warning);
+        }
+        
+        /* Floating Action Button - Command Palette Style */
+        .fab {
             position: fixed;
-            top: 60px;
+            bottom: 20px;
             right: 20px;
-            z-index: 999;
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: var(--accent-primary);
+            border: 1px solid var(--accent-primary);
+            color: var(--text-inverse);
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
+        .fab:hover {
+            background: #4493f8;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .fab:active {
+            transform: translateY(0);
+        }
+        
+        /* Loading States */
+        .loading-container, .error-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--border-default);
+            border-radius: 50%;
+            border-top-color: var(--accent-primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text, .error-text {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+        
+        .empty-state-text {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* Responsive Design */
         @media (max-width: 768px) {
             .main-container {
-                margin: 10px;
-                padding: 20px;
-                border-radius: 15px;
+                margin: 4px;
+                padding: 16px;
+                border-radius: 8px;
             }
             
-            .time-display {
-                padding: 15px;
+            .terminal-header {
+                margin: -16px -16px 16px -16px;
+                padding: 10px 12px;
+            }
+            
+            .terminal-title {
+                font-size: 12px;
+            }
+            
+            .code-block, .time-display, .stats-container {
+                padding: 12px;
             }
             
             .schedule-card {
-                padding: 15px;
+                padding: 12px;
             }
             
-            .stat-number {
-                font-size: 1.5rem;
+            .status-bar {
+                top: 8px;
+                right: 8px;
             }
+            
+            .fab {
+                bottom: 16px;
+                right: 16px;
+                width: 44px;
+                height: 44px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-container {
+                margin: 2px;
+                padding: 12px;
+                border-radius: 6px;
+                min-height: calc(100vh - 4px);
+            }
+            
+            .terminal-header {
+                margin: -12px -12px 12px -12px;
+                padding: 8px 10px;
+            }
+            
+            .terminal-dots .dot {
+                width: 10px;
+                height: 10px;
+            }
+            
+            .day-btn {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+            
+            .schedule-card {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+        }
+        
+        /* Syntax highlighting animations */
+        .syntax-highlight {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .syntax-highlight::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.1), transparent);
+            animation: syntaxScan 3s infinite;
+        }
+        
+        @keyframes syntaxScan {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-default);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
         }
     </style>
 </head>
 <body>
     <div class="main-container">
-        <!-- Status Notifikasi -->
-        <div class="notification-status">
-            <div class="badge bg-success" id="notificationStatus">
-                <i class="bi bi-bell-fill"></i> Notifikasi Aktif
-            </div>
-        </div>
-
-        <!-- Status Firebase -->
-        <div class="firebase-status">
-            <div class="badge bg-info" id="firebaseStatus">
-                <i class="bi bi-cloud"></i> Menghubungkan...
-            </div>
-        </div>
-
-        <!-- Header dengan Jam -->
-            <h2 class="mb-3">📚 Jadwal Matkul</h2>
-        <div class="time-display">
-            <div class="row">
-                <div class="col-6">
-                    <h3 id="currentTime">--:--:--</h3>
-                    <small>Waktu Sekarang</small>
+        <!-- Terminal Header -->
+        <div class="terminal-header">
+            <div class="d-flex align-items-center gap-3">
+                <div class="terminal-dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
                 </div>
-                <div class="col-6">
-                    <h4 id="currentDate">-- --- ----</h4>
-                    <small id="currentDay">---</small>
-                </div>
+                <div class="terminal-title">ScheduleOS v2.1.0</div>
+            </div>
+            <div class="terminal-path">~/dev/schedule-manager</div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-indicator" id="notificationStatus">
+                <i class="bi bi-bell"></i>
+                <span>NOTIFY</span>
+            </div>
+            <div class="status-indicator" id="firebaseStatus">
+                <i class="bi bi-cloud"></i>
+                <span>CONN</span>
             </div>
         </div>
 
-        <!-- Statistik -->
-        <div class="stats-row">
-            <div class="row">
+        <!-- Time Display - JSON Format -->
+        <div class="code-block time-display syntax-highlight" data-lang="json">
+            <div class="json-bracket">{</div>
+            <div style="margin-left: 16px;">
+                <div><span class="json-key">"currentTime"</span>: <span class="json-string" id="currentTime">"--:--:--"</span>,</div>
+                <div><span class="json-key">"date"</span>: <span class="json-string" id="currentDate">"-- --- ----"</span>,</div>
+                <div><span class="json-key">"dayOfWeek"</span>: <span class="json-string" id="currentDay">"---"</span>,</div>
+                <div><span class="json-key">"status"</span>: <span class="json-value">active</span></div>
+            </div>
+            <div class="json-bracket">}</div>
+        </div>
+
+        <!-- Statistics - Array Format -->
+        <div class="code-block stats-container" data-lang="js">
+            <div class="text-muted mb-2">const scheduleStats = [</div>
+            <div class="row" style="margin-left: 16px;">
                 <div class="col-4 stat-item">
                     <div class="stat-number" id="todayCount">0</div>
-                    <small>Hari Ini</small>
+                    <div class="stat-label">Today</div>
                 </div>
                 <div class="col-4 stat-item">
                     <div class="stat-number" id="totalCount">0</div>
-                    <small>Total Matkul</small>
+                    <div class="stat-label">Total</div>
                 </div>
                 <div class="col-4 stat-item">
                     <div class="stat-number" id="nextClass">--:--</div>
-                    <small>Kelas Berikutnya</small>
+                    <div class="stat-label">Next</div>
                 </div>
             </div>
+            <div class="text-muted">];</div>
         </div>
 
-        <!-- Filter Hari -->
+        <!-- Day Filter - Tabs -->
         <div class="day-filter">
-            <button class="day-btn active" data-day="all">Semua</button>
-            <button class="day-btn" data-day="Senin">Senin</button>
-            <button class="day-btn" data-day="Selasa">Selasa</button>
-            <button class="day-btn" data-day="Rabu">Rabu</button>
-            <button class="day-btn" data-day="Kamis">Kamis</button>
-            <button class="day-btn" data-day="Jumat">Jumat</button>
-            <button class="day-btn" data-day="Sabtu">Sabtu</button>
+            <button class="day-btn active" data-day="all">all</button>
+            <button class="day-btn" data-day="Senin">sen</button>
+            <button class="day-btn" data-day="Selasa">sel</button>
+            <button class="day-btn" data-day="Rabu">rab</button>
+            <button class="day-btn" data-day="Kamis">kam</button>
+            <button class="day-btn" data-day="Jumat">jum</button>
+            <button class="day-btn" data-day="Sabtu">sab</button>
         </div>
 
-        <!-- Daftar Jadwal -->
+        <!-- Schedule List -->
         <div id="scheduleList">
-            <!-- Jadwal akan dimuat di sini -->
+            <!-- Schedule cards will be rendered here -->
         </div>
 
-        <!-- Loading -->
-        <div id="loadingSpinner" class="text-center py-5">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-2">Memuat jadwal dari Firebase...</p>
+        <!-- Loading State -->
+        <div id="loadingSpinner" class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">$ loading schedule data...</div>
         </div>
     </div>
 
-    <!-- FAB untuk Refresh -->
-    <button class="fab" onclick="refreshSchedule()" title="Refresh Jadwal">
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="refreshSchedule()" title="Refresh Data">
         <i class="bi bi-arrow-clockwise"></i>
     </button>
 
@@ -298,7 +742,7 @@
         let currentFilter = 'all';
         let notificationPermission = false;
         let unsubscribe = null;
-        let notifiedClasses = new Set(); // Untuk melacak notifikasi yang sudah dikirim
+        let notifiedClasses = new Set();
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
@@ -307,10 +751,8 @@
 
         async function initApp() {
             try {
-                // Request notification permission
                 await requestNotificationPermission();
                 
-                // Register Service Worker
                 if ('serviceWorker' in navigator) {
                     try {
                         await navigator.serviceWorker.register('data:text/javascript;base64,' + btoa(`
@@ -337,17 +779,12 @@
                     }
                 }
 
-                // Load schedule from Firebase
                 await loadScheduleFromFirebase();
                 
-                // Start time update
                 updateTime();
                 setInterval(updateTime, 1000);
+                setInterval(checkUpcomingClasses, 30000);
                 
-                // Start notification check
-                setInterval(checkUpcomingClasses, 30000); // Check every 30 seconds
-                
-                // Setup event listeners
                 setupEventListeners();
                 
                 updateFirebaseStatus('connected');
@@ -355,7 +792,7 @@
             } catch (error) {
                 console.error('Error initializing app:', error);
                 updateFirebaseStatus('error');
-                showError('Gagal menghubungkan ke Firebase: ' + error.message);
+                showError('Error: ' + error.message);
             }
         }
 
@@ -363,16 +800,16 @@
             const statusElement = document.getElementById('firebaseStatus');
             switch(status) {
                 case 'connected':
-                    statusElement.innerHTML = '<i class="bi bi-cloud-check"></i> Firebase Terhubung';
-                    statusElement.className = 'badge bg-success';
+                    statusElement.innerHTML = '<i class="bi bi-cloud-check"></i><span>ONLINE</span>';
+                    statusElement.className = 'status-indicator active';
                     break;
                 case 'loading':
-                    statusElement.innerHTML = '<i class="bi bi-cloud-download"></i> Memuat Data...';
-                    statusElement.className = 'badge bg-warning';
+                    statusElement.innerHTML = '<i class="bi bi-cloud-download"></i><span>SYNC</span>';
+                    statusElement.className = 'status-indicator warning';
                     break;
                 case 'error':
-                    statusElement.innerHTML = '<i class="bi bi-cloud-slash"></i> Firebase Error';
-                    statusElement.className = 'badge bg-danger';
+                    statusElement.innerHTML = '<i class="bi bi-cloud-slash"></i><span>ERROR</span>';
+                    statusElement.className = 'status-indicator error';
                     break;
             }
         }
@@ -381,7 +818,6 @@
             try {
                 updateFirebaseStatus('loading');
                 
-                // Real-time listener untuk perubahan data
                 unsubscribe = onSnapshot(collection(db, "jadwal"), (querySnapshot) => {
                     scheduleData = [];
                     querySnapshot.forEach((doc) => {
@@ -404,18 +840,17 @@
                     updateFirebaseStatus('connected');
                     hideLoading();
                     
-                    // Reset notifikasi ketika data berubah
                     notifiedClasses.clear();
                 }, (error) => {
                     console.error('Error listening to Firebase:', error);
                     updateFirebaseStatus('error');
-                    showError('Error listening to Firebase: ' + error.message);
+                    showError('Firebase Error: ' + error.message);
                 });
 
             } catch (error) {
                 console.error('Error loading from Firebase:', error);
                 updateFirebaseStatus('error');
-                showError('Gagal memuat data dari Firebase: ' + error.message);
+                showError('Connection Error: ' + error.message);
             }
         }
 
@@ -430,11 +865,11 @@
         function updateNotificationStatus() {
             const statusElement = document.getElementById('notificationStatus');
             if (notificationPermission) {
-                statusElement.innerHTML = '<i class="bi bi-bell-fill"></i> Notifikasi Aktif';
-                statusElement.className = 'badge bg-success';
+                statusElement.innerHTML = '<i class="bi bi-bell-fill"></i><span>ON</span>';
+                statusElement.className = 'status-indicator active';
             } else {
-                statusElement.innerHTML = '<i class="bi bi-bell-slash"></i> Notifikasi Nonaktif';
-                statusElement.className = 'badge bg-danger';
+                statusElement.innerHTML = '<i class="bi bi-bell-slash"></i><span>OFF</span>';
+                statusElement.className = 'status-indicator error';
             }
         }
 
@@ -442,15 +877,15 @@
             const now = new Date();
             const timeString = now.toLocaleTimeString('id-ID');
             const dateString = now.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
+                day: '2-digit',
+                month: 'short',
                 year: 'numeric'
             });
             const dayString = now.toLocaleDateString('id-ID', { weekday: 'long' });
 
-            document.getElementById('currentTime').textContent = timeString;
-            document.getElementById('currentDate').textContent = dateString;
-            document.getElementById('currentDay').textContent = dayString;
+            document.getElementById('currentTime').textContent = `"${timeString}"`;
+            document.getElementById('currentDate').textContent = `"${dateString}"`;
+            document.getElementById('currentDay').textContent = `"${dayString}"`;
         }
 
         function renderSchedule() {
@@ -466,15 +901,14 @@
 
             if (filteredData.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-5">
-                        <i class="bi bi-calendar-x" style="font-size: 3rem; color: #6c757d;"></i>
-                        <p class="mt-3 text-muted">Tidak ada jadwal untuk filter ini</p>
+                    <div class="empty-state">
+                        <i class="bi bi-code-slash"></i>
+                        <div class="empty-state-text">// No classes found for this filter</div>
                     </div>
                 `;
                 return;
             }
 
-            // Sort by waktu_masuk
             filteredData.sort((a, b) => {
                 const dayOrder = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
                 const dayDiff = dayOrder.indexOf(a.hari) - dayOrder.indexOf(b.hari);
@@ -493,25 +927,39 @@
                 if (isToday && startTime !== '00:00') {
                     if (currentTime >= startTime && currentTime <= endTime) {
                         cardClass += ' active';
-                        statusBadge = '<span class="badge bg-success">Sedang Berlangsung</span>';
+                        statusBadge = '<div class="status-badge-card active">RUNNING</div>';
                     } else if (currentTime < startTime) {
                         const timeDiff = getTimeDifferenceInMinutes(currentTime, startTime);
                         if (timeDiff <= 30 && timeDiff > 0) {
                             cardClass += ' upcoming';
-                            statusBadge = `<span class="badge bg-warning">Dimulai ${timeDiff} menit lagi</span>`;
+                            statusBadge = `<div class="status-badge-card upcoming">IN ${timeDiff}MIN</div>`;
                         }
                     }
                 }
 
                 return `
                     <div class="${cardClass}">
+                        <div class="class-signature">// Class Definition</div>
                         <div class="d-flex justify-content-between align-items-start">
                             <div class="flex-grow-1">
-                                <h5 class="mb-2">${item.mata_kuliah}</h5>
-                                <p class="mb-1"><i class="bi bi-person-fill"></i> ${item.dosen}</p>
-                                <p class="mb-1"><i class="bi bi-calendar-day"></i> ${item.hari}</p>
-                                <p class="mb-1"><i class="bi bi-clock"></i> ${startTime} - ${endTime}</p>
-                                <p class="mb-0"><i class="bi bi-geo-alt-fill"></i> ${item.ruang}</p>
+                                <div class="class-name">class ${item.mata_kuliah.replace(/\s+/g, '')} {</div>
+                                <div class="class-property">
+                                    <span class="property-key">instructor:</span>
+                                    <span class="property-value">"${item.dosen}"</span>
+                                </div>
+                                <div class="class-property">
+                                    <span class="property-key">schedule:</span>
+                                    <span class="property-value">"${item.hari}"</span>
+                                </div>
+                                <div class="class-property">
+                                    <span class="property-key">timeSlot:</span>
+                                    <span class="property-value">"${startTime}-${endTime}"</span>
+                                </div>
+                                <div class="class-property">
+                                    <span class="property-key">location:</span>
+                                    <span class="property-value">"${item.ruang}"</span>
+                                </div>
+                                <div class="text-muted" style="font-size: 12px; margin-top: 8px;">}</div>
                             </div>
                             <div class="text-end">
                                 ${statusBadge}
@@ -565,8 +1013,8 @@
                     // Notifikasi 5 menit sebelum waktu masuk
                     if (timeDiffMasuk === 5 && !notifiedClasses.has(`${item.id}_masuk_5min`)) {
                         showNotification(
-                            `⏰ Kelas akan dimulai dalam 5 menit!`,
-                            `${item.mata_kuliah} dimulai pukul ${item.waktu_masuk}\nRuang: ${item.ruang}\nDosen: ${item.dosen}`
+                            `⚡ Class Starting in 5 Minutes`,
+                            `${item.mata_kuliah} will start at ${item.waktu_masuk}\nLocation: ${item.ruang}\nInstructor: ${item.dosen}`
                         );
                         notifiedClasses.add(`${item.id}_masuk_5min`);
                     }
@@ -574,8 +1022,8 @@
                     // Notifikasi saat waktu masuk
                     if (timeDiffMasuk === 0 && !notifiedClasses.has(`${item.id}_masuk`)) {
                         showNotification(
-                            `🎓 Kelas dimulai sekarang!`,
-                            `${item.mata_kuliah} sedang berlangsung\nRuang: ${item.ruang}\nDosen: ${item.dosen}`
+                            `🚀 Class is Starting Now!`,
+                            `${item.mata_kuliah} is now running\nLocation: ${item.ruang}\nInstructor: ${item.dosen}`
                         );
                         notifiedClasses.add(`${item.id}_masuk`);
                     }
@@ -583,8 +1031,8 @@
                     // Notifikasi 5 menit sebelum waktu keluar
                     if (timeDiffKeluar === 5 && !notifiedClasses.has(`${item.id}_keluar_5min`)) {
                         showNotification(
-                            `⏰ Kelas akan selesai dalam 5 menit!`,
-                            `${item.mata_kuliah} selesai pukul ${item.waktu_keluar}\nSiap-siap untuk kelas berikutnya`
+                            `⏰ Class Ending Soon`,
+                            `${item.mata_kuliah} ends at ${item.waktu_keluar}\nPrepare for next class`
                         );
                         notifiedClasses.add(`${item.id}_keluar_5min`);
                     }
@@ -592,8 +1040,8 @@
                     // Notifikasi saat waktu keluar
                     if (timeDiffKeluar === 0 && !notifiedClasses.has(`${item.id}_keluar`)) {
                         showNotification(
-                            `✅ Kelas selesai!`,
-                            `${item.mata_kuliah} telah selesai\nSelamat beristirahat!`
+                            `✅ Class Completed`,
+                            `${item.mata_kuliah} has ended\nGreat job!`
                         );
                         notifiedClasses.add(`${item.id}_keluar`);
                     }
@@ -606,14 +1054,14 @@
                 navigator.serviceWorker.ready.then(registration => {
                     registration.showNotification(title, {
                         body: body,
-                        icon: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgNDgwIj48cmVjdCBmaWxsPSIjMDA3M2U2IiB3aWRoPSI0ODAiIGhlaWdodD0iNDgwIi8+PHRleHQgeD0iMjQwIiB5PSIyNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmdW50LXNpemU9IjIzIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj7wn5OaPC90ZXh0Pjwvc3ZnPg==',
-                        badge: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgNDgwIj48cmVjdCBmaWxsPSIjMDA3M2U2IiB3aWRoPSI0ODAiIGhlaWdodD0iNDgwIi8+PHRleHQgeD0iMjQwIiB5PSIyNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmdW50LXNpemU9IjIzIj7wn5OaPC90ZXh0Pjwvc3ZnPg==',
+                        icon: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgNDgwIj48cmVjdCBmaWxsPSIjMGQxMTE3IiB3aWRoPSI0ODAiIGhlaWdodD0iNDgwIi8+PHRleHQgeD0iMjQwIiB5PSIyNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1OGE2ZmYiIGZvbnQtc2l6ZT0iMjMiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubyI+e30gPC90ZXh0Pjwvc3ZnPg==',
+                        badge: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgNDgwIj48cmVjdCBmaWxsPSIjMGQxMTE3IiB3aWRoPSI0ODAiIGhlaWdodD0iNDgwIi8+PHRleHQgeD0iMjQwIiB5PSIyNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1OGE2ZmYiIGZvbnQtc2l6ZT0iMjMiPnt9PC90ZXh0Pjwvc3ZnPg==',
                         vibrate: [200, 100, 200],
                         requireInteraction: true,
                         actions: [
                             {
                                 action: 'view',
-                                title: 'Lihat Jadwal'
+                                title: 'View Schedule'
                             }
                         ]
                     });
@@ -672,16 +1120,19 @@
                 
                 // Show refresh feedback
                 const fab = document.querySelector('.fab');
+                const originalHTML = fab.innerHTML;
                 fab.innerHTML = '<i class="bi bi-check-lg"></i>';
-                fab.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
+                fab.style.background = 'var(--accent-success)';
+                fab.style.borderColor = 'var(--accent-success)';
                 
                 setTimeout(() => {
-                    fab.innerHTML = '<i class="bi bi-arrow-clockwise"></i>';
-                    fab.style.background = 'linear-gradient(45deg, var(--primary-color), #0056b3)';
-                }, 1500);
+                    fab.innerHTML = originalHTML;
+                    fab.style.background = 'var(--accent-primary)';
+                    fab.style.borderColor = 'var(--accent-primary)';
+                }, 2000);
             } catch (error) {
                 console.error('Error refreshing:', error);
-                showError('Gagal refresh data: ' + error.message);
+                showError('Refresh failed: ' + error.message);
             }
         };
 
@@ -699,10 +1150,12 @@
             hideLoading();
             const container = document.getElementById('scheduleList');
             container.innerHTML = `
-                <div class="text-center py-5">
-                    <i class="bi bi-exclamation-triangle" style="font-size: 3rem; color: #dc3545;"></i>
-                    <p class="mt-3 text-danger">${message}</p>
-                    <button class="btn btn-primary" onclick="refreshSchedule()">Coba Lagi</button>
+                <div class="error-container">
+                    <i class="bi bi-exclamation-triangle" style="font-size: 48px; color: var(--accent-secondary); margin-bottom: 16px;"></i>
+                    <div class="error-text">// ${message}</div>
+                    <button class="btn btn-outline-primary btn-sm mt-3" onclick="refreshSchedule()" style="font-family: 'JetBrains Mono', monospace;">
+                        <i class="bi bi-arrow-clockwise"></i> retry()
+                    </button>
                 </div>
             `;
         }
@@ -722,12 +1175,11 @@
             }
         });
 
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js")
-      .then(reg => console.log("SW terdaftar:", reg.scope))
-      .catch(err => console.error("SW gagal:", err));
-  }
-
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("./sw.js")
+                .then(reg => console.log("SW registered:", reg.scope))
+                .catch(err => console.error("SW failed:", err));
+        }
 
     </script>
 </body>
