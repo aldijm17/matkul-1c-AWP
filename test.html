@@ -1,0 +1,623 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype Notifikasi ScheduleOS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border-default: #30363d;
+            --accent-primary: #58a6ff;
+            --accent-success: #3fb950;
+            --accent-warning: #d29922;
+            --accent-secondary: #f85149;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-default);
+        }
+        
+        h1 {
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .notification-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .control-card {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-default);
+        }
+        
+        .control-card h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-card h3 i {
+            font-size: 1.2em;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--accent-primary);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin: 5px 5px 5px 0;
+        }
+        
+        .btn:hover {
+            background: #4493f8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--accent-success);
+        }
+        
+        .btn-success:hover {
+            background: #35a64a;
+        }
+        
+        .btn-warning {
+            background: var(--accent-warning);
+        }
+        
+        .btn-warning:hover {
+            background: #bf8a1d;
+        }
+        
+        .btn-danger {
+            background: var(--accent-secondary);
+        }
+        
+        .btn-danger:hover {
+            background: #e2443d;
+        }
+        
+        .notification-display {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-default);
+            margin-bottom: 30px;
+            min-height: 200px;
+        }
+        
+        .notification-display h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+        
+        .notification {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-warning);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .notification.success {
+            border-left-color: var(--accent-success);
+        }
+        
+        .notification.warning {
+            border-left-color: var(--accent-warning);
+        }
+        
+        .notification.danger {
+            border-left-color: var(--accent-secondary);
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .notification-title {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .notification-time {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+        
+        .notification-body {
+            color: var(--text-primary);
+        }
+        
+        .permission-status {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-default);
+            margin-bottom: 30px;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-default);
+        }
+        
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-value {
+            font-weight: 500;
+        }
+        
+        .status-value.granted {
+            color: var(--accent-success);
+        }
+        
+        .status-value.denied {
+            color: var(--accent-secondary);
+        }
+        
+        .status-value.default {
+            color: var(--accent-warning);
+        }
+        
+        .debug-info {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-default);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        
+        .debug-info h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+        
+        pre {
+            white-space: pre-wrap;
+            color: var(--text-primary);
+        }
+        
+        .key {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .key-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .key-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        
+        .notification-5min { background: var(--accent-warning); }
+        .notification-start { background: var(--accent-success); }
+        .notification-end { background: var(--accent-secondary); }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .notification-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-bell"></i> Prototype Notifikasi ScheduleOS</h1>
+            <p class="description">Simulasi notifikasi untuk aplikasi ScheduleOS. Anda dapat menguji notifikasi yang seharusnya muncul pada berbagai skenario.</p>
+        </header>
+        
+        <div class="key">
+            <div class="key-item">
+                <div class="key-color notification-5min"></div>
+                <span>Notifikasi 5 Menit Sebelum</span>
+            </div>
+            <div class="key-item">
+                <div class="key-color notification-start"></div>
+                <span>Notifikasi Mulai Kelas</span>
+            </div>
+            <div class="key-item">
+                <div class="key-color notification-end"></div>
+                <span>Notifikasi Akhir Kelas</span>
+            </div>
+        </div>
+        
+        <div class="permission-status">
+            <h3><i class="fas fa-info-circle"></i> Status Notifikasi</h3>
+            <div class="status-item">
+                <span>Status Permission:</span>
+                <span class="status-value" id="permissionStatus">Mengecek...</span>
+            </div>
+            <div class="status-item">
+                <span>Service Worker:</span>
+                <span class="status-value" id="serviceWorkerStatus">Mengecek...</span>
+            </div>
+            <div class="status-item">
+                <span>Browser Support:</span>
+                <span class="status-value" id="browserSupportStatus">Mengecek...</span>
+            </div>
+        </div>
+        
+        <div class="notification-controls">
+            <div class="control-card">
+                <h3><i class="fas fa-clock"></i> Notifikasi Jadwal</h3>
+                <p>Test notifikasi berdasarkan waktu kelas:</p>
+                <button class="btn btn-warning" onclick="showNotification('5min')">
+                    <i class="fas fa-bell"></i> 5 Menit Sebelum Kelas
+                </button>
+                <button class="btn btn-success" onclick="showNotification('start')">
+                    <i class="fas fa-play-circle"></i> Kelas Dimulai
+                </button>
+                <button class="btn btn-danger" onclick="showNotification('end')">
+                    <i class="fas fa-check-circle"></i> Kelas Selesai
+                </button>
+            </div>
+            
+            <div class="control-card">
+                <h3><i class="fas fa-cog"></i> Pengaturan Notifikasi</h3>
+                <p>Kelola permission notifikasi:</p>
+                <button class="btn" onclick="requestNotificationPermission()">
+                    <i class="fas fa-question-circle"></i> Request Permission
+                </button>
+                <button class="btn" onclick="testBrowserNotification()">
+                    <i class="fas fa-desktop"></i> Test Notifikasi Browser
+                </button>
+            </div>
+            
+            <div class="control-card">
+                <h3><i class="fas fa-list"></i> Contoh Kelas</h3>
+                <p>Test notifikasi untuk kelas tertentu:</p>
+                <button class="btn" onclick="showNotification('pemweb')">
+                    <i class="fas fa-code"></i> Pemrograman Web
+                </button>
+                <button class="btn" onclick="showNotification('jarkom')">
+                    <i class="fas fa-network-wired"></i> Jaringan Komputer
+                </button>
+                <button class="btn" onclick="showNotification('basdat')">
+                    <i class="fas fa-database"></i> Basis Data
+                </button>
+            </div>
+        </div>
+        
+        <div class="notification-display">
+            <h3><i class="fas fa-history"></i> Notifikasi Terakhir</h3>
+            <div id="notificationContainer">
+                <div class="notification">
+                    <div class="notification-header">
+                        <div class="notification-title">Selamat datang di ScheduleOS Notifications</div>
+                        <div class="notification-time" id="currentTime"></div>
+                    </div>
+                    <div class="notification-body">
+                        Notifikasi akan muncul di sini ketika Anda melakukan test.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="debug-info">
+            <h3><i class="fas fa-bug"></i> Informasi Debug</h3>
+            <pre id="debugInfo">Menunggu informasi...</pre>
+        </div>
+    </div>
+
+    <script>
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID');
+            document.getElementById('currentTime').textContent = timeString;
+        }
+        
+        setInterval(updateTime, 1000);
+        updateTime();
+        
+        // Check notification permission
+        function checkNotificationPermission() {
+            if (!("Notification" in window)) {
+                document.getElementById('permissionStatus').textContent = "Tidak didukung";
+                document.getElementById('permissionStatus').className = "status-value denied";
+                return false;
+            }
+            
+            const permission = Notification.permission;
+            const statusElement = document.getElementById('permissionStatus');
+            
+            statusElement.textContent = permission;
+            
+            if (permission === "granted") {
+                statusElement.className = "status-value granted";
+            } else if (permission === "denied") {
+                statusElement.className = "status-value denied";
+            } else {
+                statusElement.className = "status-value default";
+            }
+            
+            return permission === "granted";
+        }
+        
+        // Check service worker support
+        function checkServiceWorker() {
+            const statusElement = document.getElementById('serviceWorkerStatus');
+            
+            if ('serviceWorker' in navigator) {
+                statusElement.textContent = "Didukung";
+                statusElement.className = "status-value granted";
+                return true;
+            } else {
+                statusElement.textContent = "Tidak didukung";
+                statusElement.className = "status-value denied";
+                return false;
+            }
+        }
+        
+        // Check browser support
+        function checkBrowserSupport() {
+            const statusElement = document.getElementById('browserSupportStatus');
+            let support = [];
+            
+            if ("Notification" in window) support.push("Notification API");
+            if ('serviceWorker' in navigator) support.push("Service Worker");
+            if ('PushManager' in window) support.push("Push Manager");
+            
+            if (support.length > 0) {
+                statusElement.textContent = support.join(", ");
+                statusElement.className = "status-value granted";
+            } else {
+                statusElement.textContent = "Minimal support tidak ditemukan";
+                statusElement.className = "status-value denied";
+            }
+        }
+        
+        // Request notification permission
+        function requestNotificationPermission() {
+            if (!("Notification" in window)) {
+                addDebugInfo("Browser tidak mendukung Notifications API");
+                return;
+            }
+            
+            Notification.requestPermission().then(function(permission) {
+                addDebugInfo("Permission status: " + permission);
+                checkNotificationPermission();
+                
+                if (permission === "granted") {
+                    showNotification("permission_granted");
+                }
+            });
+        }
+        
+        // Test browser notification
+        function testBrowserNotification() {
+            if (!checkNotificationPermission()) {
+                addDebugInfo("Tidak memiliki izin notifikasi");
+                return;
+            }
+            
+            const title = "Test Notifikasi Browser";
+            const options = {
+                body: "Ini adalah test notifikasi menggunakan Notification API browser.",
+                icon: "https://example.com/icon.png",
+                badge: "https://example.com/badge.png"
+            };
+            
+            try {
+                const notification = new Notification(title, options);
+                notification.onclick = function() {
+                    window.focus();
+                    notification.close();
+                };
+                
+                addDebugInfo("Notifikasi browser berhasil dikirim");
+                addNotification("Browser Test", "Notifikasi browser berhasil dikirim", "success");
+            } catch (error) {
+                addDebugInfo("Error mengirim notifikasi: " + error.message);
+            }
+        }
+        
+        // Show notification based on type
+        function showNotification(type) {
+            let title, body, notifClass;
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID');
+            
+            switch(type) {
+                case '5min':
+                    title = "⚡ Class Starting in 5 Minutes";
+                    body = "Pemrograman Web will start at 10:00\nLocation: Lab. Komputer\nInstructor: Dr. Ahmad";
+                    notifClass = "warning";
+                    break;
+                case 'start':
+                    title = "🚀 Class is Starting Now!";
+                    body = "Pemrograman Web is now running\nLocation: Lab. Komputer\nInstructor: Dr. Ahmad";
+                    notifClass = "success";
+                    break;
+                case 'end':
+                    title = "✅ Class Completed";
+                    body = "Pemrograman Web has ended\nGreat job!";
+                    notifClass = "danger";
+                    break;
+                case 'pemweb':
+                    title = "⏰ Pemrograman Web";
+                    body = "Kelas akan dimulai dalam 5 menit\nRuangan: Lab. Komputer A";
+                    notifClass = "warning";
+                    break;
+                case 'jarkom':
+                    title = "⏰ Jaringan Komputer";
+                    body = "Kelas akan dimulai dalam 5 menit\nRuangan: Lab. Jaringan B";
+                    notifClass = "warning";
+                    break;
+                case 'basdat':
+                    title = "⏰ Basis Data";
+                    body = "Kelas akan dimulai dalam 5 menit\nRuangan: Lab. Database C";
+                    notifClass = "warning";
+                    break;
+                case 'permission_granted':
+                    title = "Permission Diberikan";
+                    body = "Aplikasi sekarang dapat mengirimkan notifikasi";
+                    notifClass = "success";
+                    break;
+                default:
+                    title = "Test Notification";
+                    body = "This is a test notification";
+                    notifClass = "";
+            }
+            
+            // Add to notification display
+            addNotification(title, body, notifClass);
+            
+            // Also try to show browser notification if permission is granted
+            if (checkNotificationPermission()) {
+                try {
+                    const notification = new Notification(title, { body: body });
+                    notification.onclick = function() {
+                        window.focus();
+                        notification.close();
+                    };
+                    
+                    addDebugInfo("Notifikasi browser dikirim: " + type);
+                } catch (error) {
+                    addDebugInfo("Error mengirim notifikasi browser: " + error.message);
+                }
+            }
+            
+            addDebugInfo("Notifikasi ditampilkan: " + type);
+        }
+        
+        // Add notification to display
+        function addNotification(title, body, notifClass = "") {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID');
+            
+            const notificationElement = document.createElement('div');
+            notificationElement.className = `notification ${notifClass}`;
+            notificationElement.innerHTML = `
+                <div class="notification-header">
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-time">${timeString}</div>
+                </div>
+                <div class="notification-body">${body.replace(/\n/g, '<br>')}</div>
+            `;
+            
+            const container = document.getElementById('notificationContainer');
+            container.insertBefore(notificationElement, container.firstChild);
+            
+            // Limit to 5 notifications
+            if (container.children.length > 5) {
+                container.removeChild(container.lastChild);
+            }
+        }
+        
+        // Add debug info
+        function addDebugInfo(message) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID');
+            const debugElement = document.getElementById('debugInfo');
+            
+            debugElement.textContent = `[${timeString}] ${message}\n${debugElement.textContent}`;
+            
+            // Limit to 10 lines
+            const lines = debugElement.textContent.split('\n');
+            if (lines.length > 10) {
+                debugElement.textContent = lines.slice(0, 10).join('\n');
+            }
+        }
+        
+        // Initialize
+        function init() {
+            checkNotificationPermission();
+            checkServiceWorker();
+            checkBrowserSupport();
+            
+            addDebugInfo("Prototype notifikasi diinisialisasi");
+            
+            // Test notification after a delay
+            setTimeout(() => {
+                showNotification('5min');
+            }, 2000);
+        }
+        
+        // Run initialization when page loads
+        window.onload = init;
+    </script>
+</body>
+</html>
