@@ -33,7 +33,7 @@
                     <div class="dot yellow"></div>
                     <div class="dot green"></div>
                 </div>
-                <div class="terminal-title">ScheduleOS v2.1.0</div>
+                <div class="terminal-title">ScheduleOS v2.1.1</div>
             </div>
             <div class="terminal-path">~/dev/schedule-manager</div>
         </div>
@@ -152,27 +152,11 @@
             try {
                 await requestNotificationPermission();
                 
+                // Hanya registrasi service worker dari file eksternal
                 if ('serviceWorker' in navigator) {
                     try {
-                        await navigator.serviceWorker.register('data:text/javascript;base64,' + btoa(`
-                            self.addEventListener('install', function(event) {
-                                console.log('Service Worker installing...');
-                                self.skipWaiting();
-                            });
-
-                            self.addEventListener('activate', function(event) {
-                                console.log('Service Worker activating...');
-                                event.waitUntil(self.clients.claim());
-                            });
-
-                            self.addEventListener('notificationclick', function(event) {
-                                event.notification.close();
-                                event.waitUntil(
-                                    clients.openWindow('/')
-                                );
-                            });
-                        `));
-                        console.log('Service Worker registered');
+                        const registration = await navigator.serviceWorker.register('./sw.js');
+                        console.log('Service Worker registered with scope:', registration.scope);
                     } catch (error) {
                         console.log('Service Worker registration failed:', error);
                     }
@@ -258,6 +242,12 @@
                 const permission = await Notification.requestPermission();
                 notificationPermission = permission === 'granted';
                 updateNotificationStatus();
+                
+                // Periksa apakah notifikasi benar-benar didukung
+                if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
+                    console.error('Notifications aren\'t supported.');
+                    notificationPermission = false;
+                }
             }
         }
 
@@ -398,7 +388,10 @@
         }
 
         function checkUpcomingClasses() {
-            if (!notificationPermission) return;
+            if (!notificationPermission) {
+                console.log('Notification permission not granted');
+                return;
+            }
 
             const now = new Date();
             const currentDay = now.toLocaleDateString('id-ID', { weekday: 'long' });
@@ -449,12 +442,17 @@
         }
 
         function showNotification(title, body) {
-            if (notificationPermission && 'serviceWorker' in navigator) {
+            if (!notificationPermission) {
+                console.log('Cannot show notification: permission not granted');
+                return;
+            }
+
+            if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.ready.then(registration => {
                     registration.showNotification(title, {
                         body: body,
-                        icon: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgNDgwIj48cmVjdCBmaWxsPSIjMGQxMTE3IiB3aWRoPSI0ODAiIGhlaWdodD0iNDgwIi8+PHRleHQgeD0iMjQwIiB5PSIyNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1OGE2ZmYiIGZvbnQtc2l6ZT0iMjMiIGZvbnQtZmFtaWx5PSJKZXRCcmFpbnMgTW9ubyI+e30gPC90ZXh0Pjwvc3ZnPg==',
-                        badge: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgNDgwIj48cmVjdCBmaWxsPSIjMGQxMTE3IiB3aWRoPSI0ODAiIGhlaWdodD0iNDgwIi8+PHRleHQgeD0iMjQwIiB5PSIyNDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM1OGE2ZmYiIGZvbnQtc2l6ZT0iMjMiPnt9PC90ZXh0Pjwvc3ZnPg==',
+                        icon: './icons/icon-192.png', // Gunakan ikon dari file, bukan base64
+                        badge: './icons/icon-192.png',
                         vibrate: [200, 100, 200],
                         requireInteraction: true,
                         actions: [
@@ -464,6 +462,22 @@
                             }
                         ]
                     });
+                }).catch(error => {
+                    console.error('Error showing notification:', error);
+                    
+                    // Fallback untuk browser yang tidak mendukung service worker notifications
+                    if ('Notification' in window) {
+                        new Notification(title, {
+                            body: body,
+                            icon: './icons/icon-192.png'
+                        });
+                    }
+                });
+            } else if ('Notification' in window) {
+                // Fallback langsung ke Notification API
+                new Notification(title, {
+                    body: body,
+                    icon: './icons/icon-192.png'
                 });
             }
         }
@@ -573,12 +587,6 @@
                 unsubscribe();
             }
         });
-
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("./sw.js")
-                .then(reg => console.log("SW registered:", reg.scope))
-                .catch(err => console.error("SW failed:", err));
-        }
 
     </script>
 </body>
