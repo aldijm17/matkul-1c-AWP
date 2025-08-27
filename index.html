@@ -314,15 +314,33 @@
                 let statusBadge = '';
                 
                 if (isToday && startTime !== '00:00') {
-                    if (currentTime >= startTime && currentTime <= endTime) {
+                    const timeDiffMasuk = getTimeDifferenceInMinutes(currentTime, startTime);
+                    const timeDiffKeluar = getTimeDifferenceInMinutes(currentTime, endTime);
+                    const isClassEnded = timeDiffKeluar <= 0;
+                    const isClassRunning = currentTime >= startTime && currentTime <= endTime;
+                    const isClassStartingSoon = timeDiffMasuk <= 10 && timeDiffMasuk > 0;
+                    const isClassEndingSoon = timeDiffKeluar <= 10 && timeDiffKeluar > 0;
+                    
+                    // Status kelas telah selesai (tetap merah selama 24 jam)
+                    if (isClassEnded && timeDiffKeluar > -1440) { // 1440 menit = 24 jam
+                        cardClass += ' ended';
+                        statusBadge = '<div class="status-badge-card ended">ENDED</div>';
+                    } 
+                    // Status kelas sedang berlangsung
+                    else if (isClassRunning) {
                         cardClass += ' active';
                         statusBadge = '<div class="status-badge-card active">RUNNING</div>';
-                    } else if (currentTime < startTime) {
-                        const timeDiff = getTimeDifferenceInMinutes(currentTime, startTime);
-                        if (timeDiff <= 30 && timeDiff > 0) {
-                            cardClass += ' upcoming';
-                            statusBadge = `<div class="status-badge-card upcoming">IN ${timeDiff}MIN</div>`;
+                        
+                        // Cek jika kelas akan berakhir dalam 10 menit
+                        if (isClassEndingSoon) {
+                            cardClass += ' ending-soon';
+                            statusBadge = `<div class="status-badge-card ending-soon">ENDING IN ${timeDiffKeluar}MIN</div>`;
                         }
+                    } 
+                    // Status kelas akan dimulai dalam 10 menit
+                    else if (isClassStartingSoon) {
+                        cardClass += ' upcoming';
+                        statusBadge = `<div class="status-badge-card upcoming">IN ${timeDiffMasuk}MIN</div>`;
                     }
                 }
 
@@ -402,37 +420,37 @@
                     const timeDiffMasuk = getTimeDifferenceInMinutes(currentTime, item.waktu_masuk);
                     const timeDiffKeluar = getTimeDifferenceInMinutes(currentTime, item.waktu_keluar);
                     
-                    // Notifikasi 5 menit sebelum waktu masuk
-                    if (timeDiffMasuk === 5 && !notifiedClasses.has(`${item.id}_masuk_5min`)) {
+                    // Notifikasi 10 menit sebelum kelas dimulai
+                    if (timeDiffMasuk <= 10 && timeDiffMasuk > 9 && !notifiedClasses.has(`${item.id}_masuk_10min`)) {
                         showNotification(
-                            `⚡ Class Starting in 5 Minutes`,
+                            `🟠 Class Starting in 10 Minutes`,
                             `${item.mata_kuliah} will start at ${item.waktu_masuk}\nLocation: ${item.ruang}\nInstructor: ${item.dosen}`
                         );
-                        notifiedClasses.add(`${item.id}_masuk_5min`);
+                        notifiedClasses.add(`${item.id}_masuk_10min`);
                     }
                     
-                    // Notifikasi saat waktu masuk
-                    if (timeDiffMasuk === 0 && !notifiedClasses.has(`${item.id}_masuk`)) {
+                    // Notifikasi saat kelas dimulai
+                    if (timeDiffMasuk <= 0 && timeDiffMasuk > -1 && !notifiedClasses.has(`${item.id}_masuk`)) {
                         showNotification(
-                            `🚀 Class is Starting Now!`,
+                            `🟢 Class is Starting Now!`,
                             `${item.mata_kuliah} is now running\nLocation: ${item.ruang}\nInstructor: ${item.dosen}`
                         );
                         notifiedClasses.add(`${item.id}_masuk`);
                     }
                     
-                    // Notifikasi 5 menit sebelum waktu keluar
-                    if (timeDiffKeluar === 5 && !notifiedClasses.has(`${item.id}_keluar_5min`)) {
+                    // Notifikasi 10 menit sebelum kelas berakhir
+                    if (timeDiffKeluar <= 10 && timeDiffKeluar > 9 && !notifiedClasses.has(`${item.id}_keluar_10min`)) {
                         showNotification(
-                            `⏰ Class Ending Soon`,
+                            `🔵 Class Ending in 10 Minutes`,
                             `${item.mata_kuliah} ends at ${item.waktu_keluar}\nPrepare for next class`
                         );
-                        notifiedClasses.add(`${item.id}_keluar_5min`);
+                        notifiedClasses.add(`${item.id}_keluar_10min`);
                     }
                     
-                    // Notifikasi saat waktu keluar
-                    if (timeDiffKeluar === 0 && !notifiedClasses.has(`${item.id}_keluar`)) {
+                    // Notifikasi saat kelas berakhir
+                    if (timeDiffKeluar <= 0 && timeDiffKeluar > -1 && !notifiedClasses.has(`${item.id}_keluar`)) {
                         showNotification(
-                            `✅ Class Completed`,
+                            `🔴 Class Completed`,
                             `${item.mata_kuliah} has ended\nGreat job!`
                         );
                         notifiedClasses.add(`${item.id}_keluar`);

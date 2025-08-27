@@ -601,3 +601,39 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--accent-primary);
         }
+        /* Tambahkan di bagian Schedule Cards - Class Definitions */
+        .schedule-card.ending-soon {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(88, 166, 255, 0.2);
+        }
+
+        .schedule-card.ending-soon::before {
+            background: var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-primary);
+        }
+
+        .schedule-card.ended {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-secondary);
+            box-shadow: 0 0 20px rgba(248, 81, 73, 0.2);
+            opacity: 0.8;
+        }
+
+        .schedule-card.ended::before {
+            background: var(--accent-secondary);
+            box-shadow: 0 0 10px var(--accent-secondary);
+        }
+
+        /* Status badge untuk status baru */
+        .status-badge-card.ending-soon {
+            background: var(--accent-primary);
+            color: var(--text-inverse);
+            border-color: var(--accent-primary);
+        }
+
+        .status-badge-card.ended {
+            background: var(--accent-secondary);
+            color: var(--text-inverse);
+            border-color: var(--accent-secondary);
+        }
